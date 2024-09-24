@@ -22,7 +22,7 @@ const Post = ({ post, setCurrentId, setrebuild }) => {
   const dispatch = useDispatch();
 
   return (
-    <Card className="card">
+    <Card className="card" style={{ borderRadius: "20px" }}>
       <CardMedia
         className="media"
         image={post.selectedFile}
@@ -31,7 +31,7 @@ const Post = ({ post, setCurrentId, setrebuild }) => {
       <div className="overlay">
         <Typography variant="h6">{post.creator}</Typography>
         <Typography variant="body2">
-          {moment(post.createdAt).fromNow(true)}
+          {moment(post.createdAt).fromNow(true)} ago
         </Typography>
       </div>
       <div className="overlay2">

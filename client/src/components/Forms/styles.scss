@@ -1,13 +1,13 @@
 
 .paper {
    padding: 4%;
-   padding: spacing(2);
+   border-radius: 40px;
 }
-form {
+.form {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    border-radius: 20px;
+    border-radius: 40px;
     
   }
 .fileInput {
@@ -16,8 +16,9 @@ form {
   }
 
 .buttonSubmit {
-    margin-bottom: 10px;
+    margin-bottom: 8px;
   }
+
 
 
 

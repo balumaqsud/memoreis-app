@@ -4,11 +4,12 @@ import FileBase from "react-file-base64";
 import { useDispatch, useSelector } from "react-redux";
 
 import { createPost, updatePost } from "../../actions/post.js";
-import "../Forms/styles.scss";
+import "./styles.scss";
 
 const Form = ({ currentId, setCurrentId }) => {
   /////
   const dispatch = useDispatch();
+
   //////
   const post = useSelector((state) =>
     currentId ? state.posts.find((p) => p._id === currentId) : null
@@ -21,21 +22,42 @@ const Form = ({ currentId, setCurrentId }) => {
     tags: "",
     selectedFile: "",
   });
-  //////
+  /// for blanks
+  const [errors, setErrors] = useState({});
 
+  //////
   useEffect(() => {
     if (post) setPostData(post);
   }, [post]);
-  //////
+
+  /////checking if blanks are filled while submitting
+  const validate = () => {
+    let tempErrors = {};
+    if (!postData.creator) tempErrors.creator = "Creator is required";
+    if (!postData.title) tempErrors.title = "Title is required.";
+    if (!postData.message) tempErrors.message = "Message is required.";
+    if (!postData.tags || postData.tags.length === 0)
+      tempErrors.tags = "At least one tag is required.";
+    if (!postData.selectedFile)
+      tempErrors.selectedFile = "A file must be selected.";
+
+    setErrors(tempErrors);
+
+    return Object.keys(tempErrors).length === 0;
+  };
+
+  ////// handling submit function
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (currentId) {
-      dispatch(updatePost(currentId, postData));
-    } else {
-      dispatch(createPost(postData));
+    if (validate()) {
+      if (currentId) {
+        dispatch(updatePost(currentId, postData));
+      } else {
+        dispatch(createPost(postData));
+      }
+      clear();
     }
-    clear();
   };
 
   //////
@@ -52,7 +74,7 @@ const Form = ({ currentId, setCurrentId }) => {
   };
 
   return (
-    <Paper className="paper">
+    <Paper className="paper" style={{ borderRadius: "20px" }}>
       <form
         autoComplete="off"
         noValidate
@@ -71,6 +93,7 @@ const Form = ({ currentId, setCurrentId }) => {
           onChange={(e) =>
             setPostData({ ...postData, creator: e.target.value })
           }
+          helperText={errors.creator}
         />
         <TextField
           name="title"
@@ -79,6 +102,7 @@ const Form = ({ currentId, setCurrentId }) => {
           fullWidth
           value={postData.title}
           onChange={(e) => setPostData({ ...postData, title: e.target.value })}
+          helperText={errors.title}
         />
         <TextField
           name="message"
@@ -89,6 +113,7 @@ const Form = ({ currentId, setCurrentId }) => {
           onChange={(e) =>
             setPostData({ ...postData, message: e.target.value })
           }
+          helperText={errors.message}
         />
         <TextField
           name="tags"
@@ -99,6 +124,7 @@ const Form = ({ currentId, setCurrentId }) => {
           onChange={(e) =>
             setPostData({ ...postData, tags: e.target.value.split(",") })
           }
+          helperText={errors.tags}
         />
         <div className="fileInput">
           <FileBase
@@ -116,6 +142,7 @@ const Form = ({ currentId, setCurrentId }) => {
           color="primary"
           fullWidth
           type="submit"
+          style={{ margin: "6px 0" }}
         >
           Submit
         </Button>
